@@ -1,11 +1,11 @@
 import {
   RegistrationRequest,
-  RegistrationResponse,
+  RegistrationSucess,
   HttpStatus,
   ServiceId,
 } from "./contracts";
 import { v4 } from "uuid";
-import { User } from "./../domain/types";
+import { UserWithPassword } from "./../domain/types";
 // import Joi from "joi";
 import * as R from "ramda";
 
@@ -15,10 +15,10 @@ export const registerUser = ({
   username,
   email,
   password,
-}: RegistrationRequest): Promise<RegistrationResponse> => {
+}: RegistrationRequest): Promise<RegistrationSucess> => {
   const id = v4();
 
-  const user: User = {
+  const user: UserWithPassword = {
     id,
     username,
     email,
@@ -26,18 +26,18 @@ export const registerUser = ({
   };
 
   if (!localStorage.getItem("users")) {
-    const users: Array<User> = [];
+    const users: Array<UserWithPassword> = [];
     users.push(user);
     localStorage.setItem("users", JSON.stringify(users));
     return Promise.resolve({ id });
   }
 
-  const users: Array<User> = JSON.parse(
+  const users: Array<UserWithPassword> = JSON.parse(
     localStorage.getItem("users") as string
   );
 
-  const duplicatedDetails = (obj: User) =>
-    R.eqProps("username", user, obj) && R.eqProps("email", user, obj);
+  const duplicatedDetails = (obj: UserWithPassword) =>
+    R.eqProps("username", user, obj) || R.eqProps("email", user, obj);
 
   if (R.find(duplicatedDetails, users)) {
     return Promise.reject({
