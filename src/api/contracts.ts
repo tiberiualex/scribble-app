@@ -34,6 +34,8 @@ export type LoginRequest = {
 
 export type LoginResponse = {
   token: Token;
+  username: string;
+  id: UserId;
 };
 
 export type UserToken = {

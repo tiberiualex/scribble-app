@@ -109,6 +109,8 @@ export const loginUser = ({
 
     return Promise.resolve({
       token: v4(),
+      username,
+      id: loggedInUser.id,
     });
   }
 
