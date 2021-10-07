@@ -8,9 +8,15 @@ import * as client from "../../api/mockApi";
 import { RegistrationRequest } from "../../api/contracts";
 import { User } from "../../domain/types";
 
-type UserState = Partial<User>;
+type UserStatus = "LoggedOut" | "LoggedIn" | "Registered";
 
-const initialState: UserState = {};
+type UserState = Partial<User> & {
+  status: UserStatus;
+};
+
+const initialState: UserState = {
+  status: "LoggedOut",
+};
 
 export const registerUser = createAsyncThunk(
   "user/login",
@@ -31,6 +37,7 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(registerUser.fulfilled, (state, action) => {
       state.id = action.payload?.id;
+      state.status = "Registered";
     });
   },
 });
