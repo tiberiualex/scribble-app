@@ -1,10 +1,10 @@
 import React from "react";
-import Homepage from "./components/Homepage";
+import AppContainer from "./components/AppContainer";
 
 function App() {
   return (
     <div className="App">
-      <Homepage />
+      <AppContainer />
     </div>
   );
 }
