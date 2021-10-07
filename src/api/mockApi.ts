@@ -1,13 +1,15 @@
 import {
   RegistrationRequest,
   RegistrationSucess,
-  HttpStatus,
-  ServiceId,
+  LoginRequest,
+  UserToken,
 } from "./contracts";
 import { v4 } from "uuid";
 import { UserWithPassword } from "./../domain/types";
 // import Joi from "joi";
 import * as R from "ramda";
+import { LoginResponse } from "./contracts";
+import { Token } from "../domain/types";
 
 // Simulating database tables in localStorage
 
@@ -54,4 +56,69 @@ export const registerUser = ({
   users.push(user);
   localStorage.setItem("users", JSON.stringify(users));
   return Promise.resolve({ id });
+};
+
+export const loginUser = ({
+  username,
+  password,
+}: LoginRequest): Promise<LoginResponse> => {
+  if (!localStorage.getItem("users")) {
+    return Promise.reject({
+      code: "server-error",
+      status: 500,
+      detail: "Server error: no users table",
+      meta: {
+        correlationToken: v4(),
+        serviceId: "Authentication",
+      },
+    });
+  }
+
+  const users: Array<UserWithPassword> = JSON.parse(
+    localStorage.getItem("users") as string
+  );
+
+  const loggedInUser = R.find(
+    (user: UserWithPassword) =>
+      user.username === username && user.password === password,
+    users
+  );
+  if (loggedInUser) {
+    const token = v4();
+    // 24h expiration
+    const tokenExpiration = new Date(
+      new Date().getTime() + 24 * 60 * 60 * 1000
+    ).toISOString();
+    const userToken = {
+      token,
+      tokenExpiration,
+    };
+
+    if (!localStorage.getItem("tokens")) {
+      const userTokens: UserToken = {
+        [loggedInUser.id]: userToken,
+      };
+      localStorage.setItem("tokens", JSON.stringify(userTokens));
+    } else {
+      const userTokens: UserToken = JSON.parse(
+        localStorage.getItem("tokens") as string
+      );
+      userTokens[loggedInUser.id] = userToken;
+      localStorage.setItem("tokens", JSON.stringify(userTokens));
+    }
+
+    return Promise.resolve({
+      token: v4(),
+    });
+  }
+
+  return Promise.reject({
+    code: "unauthorized",
+    status: 401,
+    detail: "Incorrect details",
+    meta: {
+      correlationToken: v4(),
+      serviceId: "Authentication",
+    },
+  });
 };

@@ -2,6 +2,7 @@ import { Uuid, UserId, Token } from "./../domain/types";
 
 export type HttpStatus = 400 | 404 | 409 | 500;
 export type ServiceId = "Registration" | "Authentication" | "NoteService";
+export type DateString = string;
 
 export type RegistrationRequest = {
   username: string;
@@ -26,4 +27,18 @@ export type ErrorResponse = {
   meta: ErrorMeta;
 };
 
-export type RegistrationResponse = RegistrationSucess | ErrorResponse;
+export type LoginRequest = {
+  username: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  token: Token;
+};
+
+export type UserToken = {
+  [key: string]: {
+    token: Token;
+    tokenExpiration: DateString;
+  };
+};
