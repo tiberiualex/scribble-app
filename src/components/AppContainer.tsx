@@ -35,6 +35,7 @@ const AppContainer = () => {
               <Landing />
             </Route>
           )}
+          {/* Async load notes code. If not logged in, don't even load. Wait until login form is focused maybe? */}
         </Switch>
       </Router>
     </Container>
