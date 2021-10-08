@@ -1,4 +1,4 @@
-import LoginForm from "./LoginForm";
+import { PropsWithChildren, ReactNode } from "react";
 import styled from "styled-components";
 import { defaultShadow } from "./generic/Styles";
 
@@ -15,11 +15,11 @@ const Title = styled.h1`
   margin: 0 0 20px;
 `;
 
-const Landing = () => {
+const Landing = (props: PropsWithChildren<ReactNode>) => {
   return (
     <LandingContainer>
       <Title>Scribble</Title>
-      <LoginForm />
+      {props.children}
     </LandingContainer>
   );
 };

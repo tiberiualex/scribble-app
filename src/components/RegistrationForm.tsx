@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import { Input, InputContainer } from "./Inputs";
-import { Button } from "./Buttons";
+import { Input, InputContainer } from "./generic/Inputs";
+import { Button } from "./generic/Buttons";
 
 const RegistrationForm = () => {
   const { register, handleSubmit } = useForm();
@@ -28,3 +28,5 @@ const RegistrationForm = () => {
     </form>
   );
 };
+
+export default RegistrationForm;

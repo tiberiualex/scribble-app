@@ -2,6 +2,8 @@ import styled from "styled-components";
 import Landing from "./Landing";
 import store from "../state/store";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
+import LoginForm from "./LoginForm";
+import RegistrationForm from "./RegistrationForm";
 import {
   BrowserRouter as Router,
   Switch,
@@ -21,7 +23,7 @@ const Container = styled.div`
   width: 100vw;
 `;
 
-const AppContainer = () => {
+export const AppContainer = () => {
   const isLoggedIn = useAppSelector(
     (state) => state.user.status === "LoggedIn"
   );
@@ -31,9 +33,18 @@ const AppContainer = () => {
       <Router>
         <Switch>
           {!isLoggedIn && (
-            <Route path="/">
-              <Landing />
-            </Route>
+            <Switch>
+              <Route exact path="/">
+                <Landing>
+                  <LoginForm />
+                </Landing>
+              </Route>
+              <Route exact path="/register">
+                <Landing>
+                  <RegistrationForm />
+                </Landing>
+              </Route>
+            </Switch>
           )}
           {/* Async load notes code. If not logged in, don't even load. Wait until login form is focused maybe? */}
         </Switch>
