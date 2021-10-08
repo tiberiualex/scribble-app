@@ -24,9 +24,10 @@ const Container = styled.div`
 `;
 
 export const AppContainer = () => {
-  const isLoggedIn = useAppSelector(
-    (state) => state.user.status === "LoggedIn"
-  );
+  const { isLoggedIn, isRegistered } = useAppSelector((state) => ({
+    isLoggedIn: state.user.status === "LoggedIn",
+    isRegistered: state.user.status === "Registered",
+  }));
 
   return (
     <Container>
@@ -40,10 +41,21 @@ export const AppContainer = () => {
                 </Landing>
               </Route>
               <Route exact path="/register">
-                <Landing>
-                  <RegistrationForm />
-                </Landing>
+                {isRegistered ? (
+                  <Redirect to="/registration-successful" />
+                ) : (
+                  <Landing>
+                    <RegistrationForm />
+                  </Landing>
+                )}
               </Route>
+              {isRegistered && (
+                <Route exact path="/registration-successful">
+                  <Landing>
+                    <h1>Registration successful!</h1>
+                  </Landing>
+                </Route>
+              )}
             </Switch>
           )}
           {/* Async load notes code. If not logged in, don't even load. Wait until login form is focused maybe? */}
