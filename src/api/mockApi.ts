@@ -124,3 +124,5 @@ export const loginUser = ({
     },
   });
 };
+
+export const getUserNotes = () => {};
