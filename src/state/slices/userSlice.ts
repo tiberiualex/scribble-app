@@ -3,6 +3,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   EntityAdapter,
+  Reducer,
 } from "@reduxjs/toolkit";
 import * as client from "../../api/mockApi";
 import { RegistrationRequest, LoginRequest } from "../../api/contracts";
@@ -62,4 +63,4 @@ const userSlice = createSlice({
   },
 });
 
-export default userSlice.reducer;
+export default userSlice.reducer as Reducer<typeof initialState>;

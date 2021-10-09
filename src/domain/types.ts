@@ -6,7 +6,6 @@ export type User = {
   id: UserId;
   email: string;
   username: string;
-  password: string;
 };
 
 export type UserWithPassword = User & { password: string };

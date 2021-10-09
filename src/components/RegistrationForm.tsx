@@ -4,13 +4,12 @@ import { Input, InputContainer } from "./generic/Inputs";
 import { Button } from "./generic/Buttons";
 import { registerUser } from "../state/slices/userSlice";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
-import { User } from "../domain/types";
+import { UserWithPassword } from "../domain/types";
 
-type FormData = Omit<User, "id">;
+type FormData = Omit<UserWithPassword, "id">;
 
 const RegistrationForm = () => {
   const dispatch = useAppDispatch();
-
   const { register, handleSubmit } = useForm();
   const onSubmit = (data: FormData) => dispatch(registerUser(data));
 

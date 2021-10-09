@@ -2,10 +2,20 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { Input, InputContainer } from "./generic/Inputs";
 import { Button } from "./generic/Buttons";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { UserWithPassword } from "../domain/types";
+import { loginUser } from "../state/slices/userSlice";
+
+type FormData = {
+  username: string;
+  password: string;
+};
 
 const LoginForm = () => {
+  const dispatch = useAppDispatch();
   const { register, handleSubmit } = useForm();
-  const onSubmit = () => console.log("login");
+
+  const onSubmit = (data: FormData) => dispatch(loginUser(data));
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
