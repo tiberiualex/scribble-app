@@ -1,6 +1,6 @@
 import {
   createSlice,
-  createAsyncThink,
+  createAsyncThunk,
   createEntityAdapter,
   EntityAdapter,
   Reducer,
