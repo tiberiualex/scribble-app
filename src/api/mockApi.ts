@@ -3,15 +3,19 @@ import {
   RegistrationSucess,
   LoginRequest,
   UserToken,
+  LoginResponse,
+  Headers,
+  Params,
+  ErrorResponse,
 } from "./contracts";
 import { v4 } from "uuid";
 import { UserWithPassword } from "./../domain/types";
 // import Joi from "joi";
 import * as R from "ramda";
-import { LoginResponse } from "./contracts";
-import { Token } from "../domain/types";
+import { Token, UserId } from "../domain/types";
 
 // Simulating database tables in localStorage
+// This is not an accurate representation of how secure authentication is supposed to work
 
 export const registerUser = ({
   username,
@@ -123,6 +127,59 @@ export const loginUser = ({
       serviceId: "Authentication",
     },
   });
+};
+
+const checkAuthorization = (
+  { Authorization }: Headers,
+  { id }: Params
+): ErrorResponse | null => {
+  if (!localStorage.getItem("tokens")) {
+    return {
+      code: "server-error",
+      status: 500,
+      detail: "Server error: no tokens table",
+      meta: {
+        correlationToken: v4(),
+        serviceId: "Authentication",
+      },
+    };
+  }
+
+  const tokens: UserToken = JSON.parse(
+    localStorage.getItem("tokens") as string
+  );
+
+  const tokenObject = tokens[id];
+
+  if (!tokenObject) {
+    return {
+      code: "unauthorized",
+      status: 401,
+      detail: "Token not found",
+      meta: {
+        correlationToken: v4(),
+        serviceId: "Authentication",
+      },
+    };
+  }
+
+  const { token, tokenExpiration } = tokenObject;
+  const now = new Date();
+  const tokenExpirationDate = new Date(tokenExpiration);
+
+  if (token !== Authorization || now > tokenExpirationDate) {
+    return {
+      code: "unauthorized",
+      status: 401,
+      detail: "Token invalid",
+      meta: {
+        correlationToken: v4(),
+        serviceId: "Authentication",
+      },
+    };
+  }
+
+  return null;
 };
 
 export const getUserNotes = () => {};

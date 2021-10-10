@@ -1,6 +1,6 @@
 import { Uuid, UserId, Token } from "./../domain/types";
 
-export type HttpStatus = 400 | 404 | 409 | 500;
+export type HttpStatus = 400 | 401 | 404 | 409 | 500;
 export type ServiceId = "Registration" | "Authentication" | "NoteService";
 export type DateString = string;
 
@@ -43,4 +43,12 @@ export type UserToken = {
     token: Token;
     tokenExpiration: DateString;
   };
+};
+
+export type Headers = {
+  Authorization: Token;
+};
+
+export type Params = {
+  id: UserId;
 };
