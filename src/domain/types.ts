@@ -9,3 +9,15 @@ export type User = {
 };
 
 export type UserWithPassword = User & { password: string };
+
+export type Note = {
+  title: string;
+  id: Uuid;
+  description?: string;
+  label?: string;
+  dateTime: string;
+};
+
+export type NoteWithUser = Note & {
+  userId: UserId;
+};

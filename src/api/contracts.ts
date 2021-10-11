@@ -52,3 +52,14 @@ export type Headers = {
 export type Params = {
   id: UserId;
 };
+
+export type CreateNoteRequest = {
+  title: string;
+  description?: string;
+  label?: string;
+  dateTime?: string;
+};
+
+export type CreateNoteResponse = {
+  id: Uuid;
+};

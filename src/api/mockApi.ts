@@ -7,12 +7,18 @@ import {
   Headers,
   Params,
   ErrorResponse,
+  CreateNoteRequest,
 } from "./contracts";
 import { v4 } from "uuid";
-import { UserWithPassword } from "./../domain/types";
+import {
+  UserWithPassword,
+  NoteWithUser,
+  Token,
+  UserId,
+} from "./../domain/types";
 // import Joi from "joi";
 import * as R from "ramda";
-import { Token, UserId } from "../domain/types";
+import { CreateNoteResponse } from "./contracts";
 
 // Simulating database tables in localStorage
 // This is not an accurate representation of how secure authentication is supposed to work
@@ -183,3 +189,38 @@ const checkAuthorization = (
 };
 
 export const getUserNotes = () => {};
+
+export const createUserNote = (
+  payload: CreateNoteRequest,
+  headers: Headers,
+  params: Params
+): Promise<CreateNoteResponse> => {
+  const error = checkAuthorization(headers, params);
+  if (error) {
+    return Promise.reject(error);
+  }
+
+  const noteId = v4();
+  const notes: Array<NoteWithUser> = [];
+  const note = {
+    title: payload.title,
+    id: noteId,
+    userId: params.id,
+    dateTime: payload.dateTime || new Date().toISOString(),
+  };
+
+  notes.push(note);
+
+  if (!localStorage.getItem("notes")) {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  } else {
+    const dbNotes: Array<NoteWithUser> = JSON.parse(
+      localStorage.getItem("notes") as string
+    );
+    localStorage.setItem("notes", JSON.stringify([...dbNotes, ...notes]));
+  }
+
+  return Promise.resolve({
+    id: noteId,
+  });
+};
