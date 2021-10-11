@@ -15,6 +15,7 @@ import {
   NoteWithUser,
   Token,
   UserId,
+  Note,
 } from "./../domain/types";
 // import Joi from "joi";
 import * as R from "ramda";
@@ -188,7 +189,30 @@ const checkAuthorization = (
   return null;
 };
 
-export const getUserNotes = () => {};
+export const getUserNotes = (headers: Headers, params: Params) => {
+  const error = checkAuthorization(headers, params);
+  if (error) {
+    return Promise.reject(error);
+  }
+
+  if (!localStorage.getItem("notes")) {
+    return Promise.reject({
+      code: "not-found",
+      status: 404,
+      detail: "No notes found",
+      meta: {
+        correlationToken: v4(),
+        serviceId: "Notes",
+      },
+    });
+  }
+
+  const notes: Array<NoteWithUser> = JSON.parse(
+    localStorage.getItem("notes") as string
+  );
+  const userNotes = R.filter((note) => note.userId === params.id, notes);
+  return Promise.resolve(userNotes);
+};
 
 export const createUserNote = (
   payload: CreateNoteRequest,
