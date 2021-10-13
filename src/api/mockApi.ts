@@ -19,7 +19,7 @@ import {
 } from "./../domain/types";
 // import Joi from "joi";
 import * as R from "ramda";
-import { CreateNoteResponse } from "./contracts";
+import { CreateNoteResponse, CheckTokenRequest } from "./contracts";
 
 // Simulating database tables in localStorage
 // This is not an accurate representation of how secure authentication is supposed to work
@@ -247,4 +247,11 @@ export const createUserNote = (
   return Promise.resolve({
     id: noteId,
   });
+};
+
+export const checkTokenIsValid = ({
+  userId,
+  token,
+}: CheckTokenRequest): Promise<boolean> => {
+  return Promise.resolve(true);
 };

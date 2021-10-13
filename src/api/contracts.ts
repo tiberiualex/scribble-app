@@ -63,3 +63,8 @@ export type CreateNoteRequest = {
 export type CreateNoteResponse = {
   id: Uuid;
 };
+
+export type CheckTokenRequest = {
+  userId: UserId;
+  token: Token;
+};

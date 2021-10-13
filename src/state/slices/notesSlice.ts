@@ -14,17 +14,17 @@ const initialState = notesAdapter.getInitialState({
   loading: false,
 });
 
-export const getUserNotes = createAsyncThunk(
-  "notes/getAll",
-  async (headers: Headers, params: Params, { rejectWithValue }) => {
-    try {
-      const result = client.getUserNotes(headers, params);
-      return result;
-    } catch (err) {
-      rejectWithValue(err);
-    }
-  }
-);
+// export const getUserNotes = createAsyncThunk(
+//   "notes/getAll",
+//   async (headers: Headers, params: Params, { rejectWithValue }) => {
+//     try {
+//       const result = client.getUserNotes(headers, params);
+//       return result;
+//     } catch (err) {
+//       rejectWithValue(err);
+//     }
+//   }
+// );
 
 const notesSlice = createSlice({
   name: "notes",
