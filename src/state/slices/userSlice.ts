@@ -52,7 +52,7 @@ export const checkToken = createAsyncThunk(
   ) => {
     try {
       const result = await client.checkTokenIsValid({ userId, token });
-      return result;
+      return { isLoggedIn: result };
     } catch (err) {
       rejectWithValue(err);
     }
