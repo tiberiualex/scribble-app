@@ -3,14 +3,22 @@ import { UserId, Token } from "../domain/types";
 type StoredToken = {
   userId: UserId;
   token: Token;
+  username: string;
 };
 
-export const storeToken = (userId: UserId, token: Token): void => {
+// Don't store access tokens in localStorage in a real world app
+
+export const storeToken = (
+  userId: UserId,
+  token: Token,
+  username: string
+): void => {
   localStorage.setItem(
     "token",
     JSON.stringify({
       userId,
       token,
+      username,
     })
   );
 };

@@ -253,5 +253,9 @@ export const checkTokenIsValid = ({
   userId,
   token,
 }: CheckTokenRequest): Promise<boolean> => {
-  return Promise.resolve(true);
+  if (userId) {
+    return Promise.resolve(true);
+  }
+
+  return Promise.reject(false);
 };

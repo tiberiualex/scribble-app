@@ -7,7 +7,7 @@ import {
 } from "@reduxjs/toolkit";
 import * as client from "../../api/mockApi";
 import { RegistrationRequest, LoginRequest } from "../../api/contracts";
-import { User, Token } from "../../domain/types";
+import { User, Token, UserId } from "../../domain/types";
 
 type UserStatus = "LoggedOut" | "LoggedIn" | "Registered";
 
@@ -37,6 +37,21 @@ export const loginUser = createAsyncThunk(
   async (userDetails: LoginRequest, { rejectWithValue }) => {
     try {
       const result = await client.loginUser(userDetails);
+      return result;
+    } catch (err) {
+      rejectWithValue(err);
+    }
+  }
+);
+
+export const checkToken = createAsyncThunk(
+  "user/checkToken",
+  async (
+    { userId, token }: { userId: UserId; token: Token },
+    { rejectWithValue }
+  ) => {
+    try {
+      const result = await client.checkTokenIsValid({ userId, token });
       return result;
     } catch (err) {
       rejectWithValue(err);

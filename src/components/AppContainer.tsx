@@ -4,6 +4,8 @@ import store from "../state/store";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import LoginForm from "./LoginForm";
 import RegistrationForm from "./RegistrationForm";
+import { useEffect } from "react";
+import { storeToken, getStoredToken } from "../utils/AuthStorage";
 import {
   BrowserRouter as Router,
   Switch,
@@ -28,6 +30,14 @@ export const AppContainer = () => {
     isLoggedIn: state.user.status === "LoggedIn",
     isRegistered: state.user.status === "Registered",
   }));
+
+  useEffect(() => {
+    const user = getStoredToken();
+
+    if (user?.token) {
+      console.log("mortii matii");
+    }
+  }, []);
 
   return (
     <Container>
