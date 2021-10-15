@@ -52,7 +52,14 @@ export const checkToken = createAsyncThunk(
   ) => {
     try {
       const result = await client.checkTokenIsValid({ userId, token });
-      return { isLoggedIn: result };
+
+      if (result) {
+        return {
+          userId: userId,
+          token: token,
+          loggedIn: true,
+        };
+      }
     } catch (err) {
       rejectWithValue(err);
     }
@@ -74,6 +81,15 @@ const userSlice = createSlice({
       state.status = "LoggedIn";
       state.username = payload?.username;
       state.token = payload?.token;
+    });
+    builder.addCase(checkToken.fulfilled, (state, action) => {
+      const payload = action.payload;
+
+      if (payload) {
+        state.id = payload.userId;
+        state.token = payload.token;
+        state.status = "LoggedIn";
+      }
     });
   },
 });
