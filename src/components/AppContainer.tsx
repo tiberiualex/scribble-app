@@ -4,8 +4,9 @@ import store from "../state/store";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import LoginForm from "./LoginForm";
 import RegistrationForm from "./RegistrationForm";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { storeToken, getStoredToken } from "../utils/AuthStorage";
+import { checkToken } from "../state/slices/userSlice";
 import {
   BrowserRouter as Router,
   Switch,
@@ -31,13 +32,18 @@ export const AppContainer = () => {
     isRegistered: state.user.status === "Registered",
   }));
 
-  useEffect(() => {
-    const user = getStoredToken();
+  const dispatch = useAppDispatch();
 
+  const initialLoginCheck = useCallback(() => {
+    const user = getStoredToken();
     if (user?.token) {
-      console.log("mortii matii");
+      dispatch(checkToken(user));
     }
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    initialLoginCheck();
+  });
 
   return (
     <Container>

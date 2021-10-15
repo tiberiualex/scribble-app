@@ -51,8 +51,8 @@ export const checkToken = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
+      console.log("check token");
       const result = await client.checkTokenIsValid({ userId, token });
-
       if (result) {
         return {
           userId: userId,
