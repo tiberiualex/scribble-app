@@ -16,6 +16,8 @@ const CreateNoteForm = () => {
     token: state.user.token as string,
   }));
 
+  console.log(userId, token);
+
   const { register, handleSubmit } = useForm();
   const onSubmit = ({ title }: FormData) => {
     console.log("dispatching");

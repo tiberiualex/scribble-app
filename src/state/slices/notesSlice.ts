@@ -8,6 +8,7 @@ import {
 import * as client from "../../api/mockApi";
 import { CreateNoteRequest, Headers, Params } from "../../api/contracts";
 import { Note, UserId, Token, NoteWithUser } from "../../domain/types";
+import { RootState } from "state/store";
 
 const notesAdapter = createEntityAdapter<Note>();
 const initialState = notesAdapter.getInitialState({
@@ -52,6 +53,7 @@ export const createUserNote = createAsyncThunk(
       // Is it even worth keeping the token in the state? Or just leave it to the API client to deal with this
       // thunkApi.getState(state => state.)
     } catch (err) {
+      console.log(err);
       thunkApi.rejectWithValue(err);
     }
   }
@@ -71,3 +73,11 @@ const notesSlice = createSlice({
 });
 
 export default notesSlice.reducer as Reducer<typeof initialState>;
+
+export const {
+  selectById: selectNoteById,
+  selectIds: selectNoteIds,
+  selectEntities: selectNotesEntities,
+  selectAll: selectAllNotes,
+  selectTotal: selectTotalNotes,
+} = notesAdapter.getSelectors((state: RootState) => state.notes);
