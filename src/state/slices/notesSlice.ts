@@ -42,4 +42,4 @@ const notesSlice = createSlice({
   },
 });
 
-export default notesSlice.reducer;
+export default notesSlice.reducer as Reducer<typeof initialState>;

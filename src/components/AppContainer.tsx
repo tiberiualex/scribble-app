@@ -7,6 +7,7 @@ import RegistrationForm from "./RegistrationForm";
 import { useCallback, useEffect } from "react";
 import { storeToken, getStoredToken } from "../utils/AuthStorage";
 import { checkToken } from "../state/slices/userSlice";
+import { getUserNotes } from "../state/slices/notesSlice";
 import {
   BrowserRouter as Router,
   Switch,
@@ -27,10 +28,14 @@ const Container = styled.div`
 `;
 
 export const AppContainer = () => {
-  const { isLoggedIn, isRegistered } = useAppSelector((state) => ({
-    isLoggedIn: state.user.status === "LoggedIn",
-    isRegistered: state.user.status === "Registered",
-  }));
+  const { isLoggedIn, isRegistered, userId, token } = useAppSelector(
+    (state) => ({
+      isLoggedIn: state.user.status === "LoggedIn",
+      isRegistered: state.user.status === "Registered",
+      userId: state.user.id,
+      token: state.user.token,
+    })
+  );
 
   const dispatch = useAppDispatch();
 
@@ -41,9 +46,20 @@ export const AppContainer = () => {
     }
   }, [dispatch]);
 
+  const getNotes = useCallback(() => {
+    console.log("getting notes");
+    if (isLoggedIn && userId && token) {
+      dispatch(getUserNotes({ userId: userId, token: token }));
+    }
+  }, [isLoggedIn, dispatch, userId, token]);
+
   useEffect(() => {
     initialLoginCheck();
   });
+
+  useEffect(() => {
+    getNotes();
+  }, [isLoggedIn, getNotes]);
 
   return (
     <Container>
