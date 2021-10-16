@@ -29,6 +29,34 @@ export const getUserNotes = createAsyncThunk(
   }
 );
 
+export const createUserNote = createAsyncThunk(
+  "notes/create",
+  async (
+    {
+      userId,
+      token,
+      title,
+    }: {
+      userId: UserId;
+      token: Token;
+      title: string;
+    },
+    thunkApi
+  ) => {
+    try {
+      await client.createUserNote({ userId, token, title });
+      console.log("creating note thunk");
+      thunkApi.dispatch(getUserNotes({ userId, token }));
+      // I guess we get the RootState type. Or is it just limited to the slice type?
+      // Need to find a way to inject the auth
+      // Is it even worth keeping the token in the state? Or just leave it to the API client to deal with this
+      // thunkApi.getState(state => state.)
+    } catch (err) {
+      thunkApi.rejectWithValue(err);
+    }
+  }
+);
+
 const notesSlice = createSlice({
   name: "notes",
   initialState,

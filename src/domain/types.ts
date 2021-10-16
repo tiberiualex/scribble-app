@@ -12,7 +12,7 @@ export type UserWithPassword = User & { password: string };
 
 export type Note = {
   title: string;
-  id: Uuid;
+  id?: Uuid;
   description?: string;
   label?: string;
   dateTime: string;

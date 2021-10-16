@@ -8,6 +8,8 @@ import { useCallback, useEffect } from "react";
 import { storeToken, getStoredToken } from "../utils/AuthStorage";
 import { checkToken } from "../state/slices/userSlice";
 import { getUserNotes } from "../state/slices/notesSlice";
+import NotesContainer from "./NotesContainer";
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -91,6 +93,13 @@ export const AppContainer = () => {
             </Switch>
           )}
           {/* Async load notes code. If not logged in, don't even load. Wait until login form is focused maybe? */}
+          {isLoggedIn && (
+            <Switch>
+              <Route>
+                <NotesContainer />
+              </Route>
+            </Switch>
+          )}
         </Switch>
       </Router>
     </Container>
