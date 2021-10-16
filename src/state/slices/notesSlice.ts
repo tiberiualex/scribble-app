@@ -7,7 +7,7 @@ import {
 } from "@reduxjs/toolkit";
 import * as client from "../../api/mockApi";
 import { CreateNoteRequest, Headers, Params } from "../../api/contracts";
-import { Note, UserId, Token } from "../../domain/types";
+import { Note, UserId, Token, NoteWithUser } from "../../domain/types";
 
 const notesAdapter = createEntityAdapter<Note>();
 const initialState = notesAdapter.getInitialState({
@@ -33,7 +33,13 @@ const notesSlice = createSlice({
   name: "notes",
   initialState,
   reducers: {},
-  extraReducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(getUserNotes.fulfilled, (state, action) => {
+      if (action.payload) {
+        notesAdapter.upsertMany(state, action.payload);
+      }
+    });
+  },
 });
 
 export default notesSlice.reducer;
