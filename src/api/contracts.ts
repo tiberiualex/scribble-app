@@ -58,13 +58,17 @@ export type CreateNoteRequest = {
   description?: string;
   label?: string;
   dateTime?: string;
-};
+} & RequestWithAuth;
 
 export type CreateNoteResponse = {
   id: Uuid;
 };
 
-export type CheckTokenRequest = {
+export type RequestWithAuth = {
   userId: UserId;
   token: Token;
 };
+
+export type CheckTokenRequest = RequestWithAuth;
+
+export type GetUserNotesRequest = RequestWithAuth;

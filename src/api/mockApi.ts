@@ -19,7 +19,11 @@ import {
 } from "./../domain/types";
 // import Joi from "joi";
 import * as R from "ramda";
-import { CreateNoteResponse, CheckTokenRequest } from "./contracts";
+import {
+  CreateNoteResponse,
+  CheckTokenRequest,
+  GetUserNotesRequest,
+} from "./contracts";
 
 // Simulating database tables in localStorage
 // This is not an accurate representation of how secure authentication is supposed to work
@@ -137,8 +141,8 @@ export const loginUser = ({
 };
 
 const checkAuthorization = (
-  { Authorization }: Headers,
-  { id }: Params
+  userId: UserId,
+  token: Token
 ): ErrorResponse | null => {
   if (!localStorage.getItem("tokens")) {
     return {
@@ -156,7 +160,7 @@ const checkAuthorization = (
     localStorage.getItem("tokens") as string
   );
 
-  const tokenObject = tokens[id];
+  const tokenObject = tokens[userId];
 
   if (!tokenObject) {
     return {
@@ -170,11 +174,11 @@ const checkAuthorization = (
     };
   }
 
-  const { token, tokenExpiration } = tokenObject;
+  const { token: dbToken, tokenExpiration } = tokenObject;
   const now = new Date();
   const tokenExpirationDate = new Date(tokenExpiration);
 
-  if (token !== Authorization || now > tokenExpirationDate) {
+  if (dbToken !== token || now > tokenExpirationDate) {
     return {
       code: "unauthorized",
       status: 401,
@@ -189,8 +193,8 @@ const checkAuthorization = (
   return null;
 };
 
-export const getUserNotes = (headers: Headers, params: Params) => {
-  const error = checkAuthorization(headers, params);
+export const getUserNotes = ({ userId, token }: GetUserNotesRequest) => {
+  const error = checkAuthorization(userId, token);
   if (error) {
     return Promise.reject(error);
   }
@@ -210,16 +214,14 @@ export const getUserNotes = (headers: Headers, params: Params) => {
   const notes: Array<NoteWithUser> = JSON.parse(
     localStorage.getItem("notes") as string
   );
-  const userNotes = R.filter((note) => note.userId === params.id, notes);
+  const userNotes = R.filter((note) => note.userId === userId, notes);
   return Promise.resolve(userNotes);
 };
 
 export const createUserNote = (
-  payload: CreateNoteRequest,
-  headers: Headers,
-  params: Params
+  request: CreateNoteRequest
 ): Promise<CreateNoteResponse> => {
-  const error = checkAuthorization(headers, params);
+  const error = checkAuthorization(request.userId, request.token);
   if (error) {
     return Promise.reject(error);
   }
@@ -227,10 +229,10 @@ export const createUserNote = (
   const noteId = v4();
   const notes: Array<NoteWithUser> = [];
   const note = {
-    title: payload.title,
+    title: request.title,
     id: noteId,
-    userId: params.id,
-    dateTime: payload.dateTime || new Date().toISOString(),
+    userId: request.userId,
+    dateTime: request.dateTime || new Date().toISOString(),
   };
 
   notes.push(note);
