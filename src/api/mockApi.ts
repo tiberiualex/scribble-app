@@ -70,6 +70,11 @@ export const registerUser = ({
 
   users.push(user);
   localStorage.setItem("users", JSON.stringify(users));
+
+  if (!localStorage.getItem("notes")) {
+    localStorage.setItem("notes", JSON.stringify([]));
+  }
+
   return Promise.resolve({ id });
 };
 
@@ -255,7 +260,7 @@ export const checkTokenIsValid = ({
   userId,
   token,
 }: CheckTokenRequest): Promise<boolean> => {
-  if (userId) {
+  if (!checkAuthorization(userId, token)) {
     return Promise.resolve(true);
   }
 
