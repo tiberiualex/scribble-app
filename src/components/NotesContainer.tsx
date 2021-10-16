@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { useAppDispatch, useAppSelector } from "state/hooks";
 
 const NotesContainer = () => {
   return <div></div>;
